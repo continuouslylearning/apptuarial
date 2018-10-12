@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const claimSchema = new mongoose.Schema({
   accidentDate: { type: Date, required: true },
-  status: { type: STRING, enum: ['OPEN', 'CLOSED'], default: 'OPEN'},
+  status: { type: String, enum: ['OPEN', 'CLOSED'], default: 'OPEN'},
   transactions: [{ 
     transactionDate: { type: Date, required: true, default: Date.now()},
     lossPayment: { type: Number, required: true, default: 0 },
