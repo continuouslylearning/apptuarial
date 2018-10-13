@@ -21,7 +21,6 @@ function jwtAuth(req, res, next){
     req.user = payload.user;
     return next();
   });
-
 }
 
 module.exports = jwtAuth;

@@ -14,8 +14,6 @@ userSchema.methods.validatePassword = function(password){
   return bcrypt.compare(password, this.password);
 };
 
-userSchema.set('timestamps', true);
-
 userSchema.set('toObject', {
   virtuals: true,
   versionKey: false,

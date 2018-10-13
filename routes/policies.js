@@ -31,7 +31,8 @@ router.post('/', express.json(),(req, res, next) => {
   const userId = req.user.id;
   const { effectiveDate, expirationDate, premium, exposures } = req.body;
 
-  const requiredFields = ['effectiveDate', 'expirationDate', 'premium', 'exposures'];
+  const requiredFields = ['effectiveDate', 'expirationDate', 'premium'];
+  
   const missingField = requiredFields.find(field => !(field in req.body));
   if(missingField){
     const err = new Error(`${missingField} field is missing`);
