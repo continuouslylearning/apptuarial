@@ -2,7 +2,6 @@ const User = require('../models/user');
 
 module.exports = function localAuth(req, res, next){
   const { username, password } = req.body;
-  console.log('localAuth', 'running');
   if(!username || !password){
     const err = new Error('Missing username or password');
     err.status = 422;
@@ -14,7 +13,9 @@ module.exports = function localAuth(req, res, next){
     .then(_user => {
       user = _user;
       if(!user){
-        return Promise.reject();
+        const err = new Error('Username does not exist');
+        err.status = 422;
+        return Promise.reject(err);
       }
       return user.validatePassword(password);
     })

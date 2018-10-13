@@ -7,6 +7,7 @@ const morgan = require('morgan');
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 
+const policiesRouter = require('./routes/policies');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const app = express();
@@ -25,6 +26,7 @@ app.use(
 
 app.use('/api/users', usersRouter);
 app.use('/auth', authRouter);
+app.use('/api/policies', policiesRouter);
 
 
 app.use((err, req, res, next) => {
