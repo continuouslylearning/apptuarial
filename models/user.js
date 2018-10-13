@@ -10,7 +10,7 @@ userSchema.statics.hashPassword = password => {
   return bcrypt.hash(password, 10);
 };
 
-userSchema.methods.validatePassword = password => {
+userSchema.methods.validatePassword = function(password){
   return bcrypt.compare(password, this.password);
 };
 

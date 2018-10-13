@@ -8,6 +8,7 @@ const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
 
 const usersRouter = require('./routes/users');
+const authRouter = require('./routes/auth');
 const app = express();
 
 app.use(
@@ -23,6 +24,23 @@ app.use(
 );
 
 app.use('/api/users', usersRouter);
+app.use('/auth', authRouter);
+
+
+app.use((err, req, res, next) => {
+  if (err.status) {
+    const errBody = { 
+      ...err,
+      message: err.message 
+    };
+    //const errBody = Object.assign({}, err, { message: err.message });
+    res.status(err.status).json(errBody);
+  } else {
+    console.error(err);
+    res.status(500).json({ message: 'Internal Server Error' });
+  }
+});
+
 
 function runServer(port = PORT) {
   const server = app

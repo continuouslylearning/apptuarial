@@ -54,7 +54,8 @@ router.post('/', (req, res, next) => {
     .then(user => {
       if(user){
         const err = new Error('Username already exists');
-        return Promise.reject(err);
+        err.status = 422;
+        return next(err);
       }
       return User.hashPassword(password);
     })
@@ -66,7 +67,8 @@ router.post('/', (req, res, next) => {
     })
     .then(user => {
       return res.status(201).json(user);
-    });
+    })
+    .catch(next);
 });
 
 module.exports = router;
