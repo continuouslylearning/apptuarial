@@ -3,6 +3,7 @@
 const express = require('express');
 const cors = require('cors');
 const morgan = require('morgan');
+const passport = require('passport');
 
 const { PORT, CLIENT_ORIGIN } = require('./config');
 const { dbConnect } = require('./db-mongoose');
@@ -12,22 +13,28 @@ const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
 const app = express();
 
+const jwtStrategy = require('./strategies/jwt');
+passport.use(jwtStrategy);
+// const jwtAuth = passport.authenticate('jwt', { session: false, failWithError: true });
+const jwtAuth = require('./strategies/jwtAuth');
+
 app.use(
   morgan(process.env.NODE_ENV === 'production' ? 'common' : 'dev', {
     skip: (req, res) => process.env.NODE_ENV === 'test'
   })
 );
 
-app.use(
-  cors({
-    origin: CLIENT_ORIGIN
-  })
-);
+app.use(cors({ origin: CLIENT_ORIGIN }));
 
 app.use('/api/users', usersRouter);
 app.use('/auth', authRouter);
-app.use('/api/policies', policiesRouter);
+app.use('/api/policies', jwtAuth, policiesRouter);
 
+app.use((req, res, next) => {
+  const err = new Error('Not found');
+  err.status = 404;
+  next(err);
+});
 
 app.use((err, req, res, next) => {
   if (err.status) {
@@ -35,8 +42,7 @@ app.use((err, req, res, next) => {
       ...err,
       message: err.message 
     };
-    //const errBody = Object.assign({}, err, { message: err.message });
-    res.status(err.status).json(errBody);
+    return res.status(err.status).json(errBody);
   } else {
     console.error(err);
     res.status(500).json({ message: 'Internal Server Error' });

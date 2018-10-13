@@ -25,7 +25,8 @@ module.exports = function localAuth(req, res, next){
         err.status = 400;
         return Promise.reject(err);
       }
-      res.user = user;
+      console.log(user);
+      req.user = user;
       return next();
     })
     .catch(next);
