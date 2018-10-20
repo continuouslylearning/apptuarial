@@ -14,13 +14,13 @@ function createAuthToken (user){
   });
 }
 
-router.post('/login', localAuth, (req, res, next) => {
+router.post('/login', localAuth, (req, res) => {
   const user = req.user;
   const authToken = createAuthToken(user);
   res.json({ authToken });
 });
 
-router.post('/refresh', jwtAuth, (req, res, next) => {
+router.post('/refresh', jwtAuth, (req, res) => {
   const user = req.user;
   const authToken = createAuthToken(user);
   res.json({ authToken});

@@ -14,7 +14,7 @@ module.exports = function localAuth(req, res, next){
       user = _user;
       if(!user){
         const err = new Error('Username does not exist');
-        err.status = 422;
+        err.status = 401;
         return Promise.reject(err);
       }
       return user.validatePassword(password);
@@ -22,10 +22,9 @@ module.exports = function localAuth(req, res, next){
     .then(isValid => {
       if(!isValid){
         const err = new Error('Password is invalid');
-        err.status = 400;
+        err.status = 401;
         return Promise.reject(err);
       }
-      console.log(user);
       req.user = user;
       return next();
     })

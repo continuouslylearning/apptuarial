@@ -10,8 +10,9 @@ const { dbConnect } = require('./db-mongoose');
 const policiesRouter = require('./routes/policies');
 const usersRouter = require('./routes/users');
 const authRouter = require('./routes/auth');
-const app = express();
+const claimsRouter = require('./routes/claims');
 
+const app = express();
 const jwtAuth = require('./strategies/jwtAuth');
 
 app.use(
@@ -25,6 +26,7 @@ app.use(cors({ origin: CLIENT_ORIGIN }));
 app.use('/api/users', usersRouter);
 app.use('/auth', authRouter);
 app.use('/api/policies', jwtAuth, policiesRouter);
+app.use('/api/claims', jwtAuth, claimsRouter);
 
 app.use((req, res, next) => {
   const err = new Error('Not found');
@@ -62,4 +64,4 @@ if (require.main === module) {
   runServer();
 }
 
-module.exports = { app };
+module.exports = app;

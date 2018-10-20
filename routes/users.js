@@ -26,24 +26,24 @@ router.post('/', (req, res, next) => {
 
   const fieldSizes = {
     username: {
-      min: 1
+      min: 5
     },
     password: {
-      min: 8,
+      min: 7,
       max: 72
     }
   };
 
   const tooSmallField = Object.keys(fieldSizes).find(
-    field => 'min' in fieldSizes[field] && req.body[field].trim() < fieldSizes[field].min
+    field => 'min' in fieldSizes[field] && req.body[field].trim().length < fieldSizes[field].min
   );
   const tooLargeField = Object.keys(fieldSizes).find(
-    field => 'max' in fieldSizes[field] && req.body[field].trim() > fieldSizes[field].max
+    field => 'max' in fieldSizes[field] && req.body[field].trim().length > fieldSizes[field].max
   );
 
   if(tooSmallField || tooLargeField){
     const message = tooSmallField 
-      ? `${tooSmallField} must be at least ${fieldSizes[tooSmallField].min} characters long.`
+      ? `${tooSmallField} must be at least ${fieldSizes[tooSmallField].min} characters long`
       : `${tooLargeField} must be at most ${fieldSizes[tooLargeField].max} characters long`;
     const err = new Error(message);
     err.status = 422;

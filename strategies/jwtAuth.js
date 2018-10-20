@@ -3,6 +3,12 @@ const { JWT_SECRET } = require('../config');
 
 function jwtAuth(req, res, next){
   const auth = req.header('Authorization');
+  
+  if(!auth){
+    const err = new Error('Authorization header is missing');
+    err.status = 401;
+    return next(err);
+  }
 
   const [ scheme, token] = auth.split(' ');
 
@@ -18,6 +24,7 @@ function jwtAuth(req, res, next){
       err.status = 401;
       return next(err);
     }
+    
     req.user = payload.user;
     return next();
   });

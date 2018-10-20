@@ -1,4 +1,11 @@
-{
+{   "globals": {
+        "describe": true,
+        "it": true,
+        "before": true,
+        "beforeEach": true,
+        "after": true,
+        "afterEach": true
+    },
     "env": {
         "es6": true,
         "node": true
@@ -7,7 +14,11 @@
     "parserOptions": {
         "ecmaVersion": 2018
     },
+    "plugins": [
+        "mocha"
+    ],
     "rules": {
+        "mocha/no-exclusive-tests": "error",
         "indent": [
             "error",
             2
