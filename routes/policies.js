@@ -60,6 +60,18 @@ router.post('/', express.json(),(req, res, next) => {
     return next(err);
   }
 
+  const minValues = {
+    premium: 1,
+    exposures: 1
+  };
+
+  const smallField = Object.keys(minValues).find(field => field in req.body && req.body[field] < minValues[field]);
+  if(smallField){
+    const err = new Error(`Field ${smallField} must be at least ${minValues[smallField]}`);
+    err.status = 422;
+    return next(err);
+  }
+
   const policy = {
     effectiveDate: new Date(effectiveDate),
     expirationDate: new Date(expirationDate),
@@ -69,7 +81,7 @@ router.post('/', express.json(),(req, res, next) => {
   };
 
   Policies.create(policy)
-    .then(policy => res.json(policy))
+    .then(policy => res.status(201).json(policy))
     .catch(next);
 });
 

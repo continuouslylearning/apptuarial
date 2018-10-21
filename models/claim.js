@@ -8,7 +8,7 @@ const claimSchema = new mongoose.Schema({
     lossPayment: { type: Number, min: 0, default: 0 },
     caseReserve: { type: Number, min: 0, default: 0 }
   }],
-  policyId: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'User'},
+  policyId: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'Policy'},
   userId: { type: mongoose.SchemaTypes.ObjectId, required: true, ref: 'User' }
 });
 

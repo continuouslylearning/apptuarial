@@ -61,7 +61,7 @@ router.put('/:id', express.json(), validateId, (req, res, next) => {
 router.post('/', express.json(),(req, res, next) => {
   const userId = req.user.id;
   const { accidentDate, policyId, caseReserve } = req.body;
-  const requiredFields = ['accidentDate', 'caseReserve'];
+  const requiredFields = ['policyId', 'accidentDate', 'caseReserve'];
   const missingField = requiredFields.find(field => !(field in req.body));
 
   if(missingField){
@@ -93,7 +93,7 @@ router.post('/', express.json(),(req, res, next) => {
       }
       return Claims.create(claim);
     })
-    .then(claim => res.json(claim))
+    .then(claim => res.status(201).json(claim))
     .catch(next);
 });
 
