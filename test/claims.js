@@ -248,7 +248,51 @@ describe('Claims API', function(){
 
   describe('PUT claim', function(){
 
+    it('should update claim in collection', function(){
+      const update = {
+        accidentDate: new Date(2018, 0, 1),
+        transactions: [{
+          transactionDate: new Date(),
+          caseReserve: 2222,
+          lossPayment: 1111
+        }]
+      };
 
+      let id;
+      return Claims.findOne({ userId })
+        .then(claim => {
+          id = claim.id;
+        
+          return chai.request(app)
+            .put(`/api/claims/${id}`)
+            .send(update)
+            .set('Authorization', `Bearer ${token}`);
+        })
+        .then(res => {
+          expect(res).to.have.status(201);
+          expect(new Date(res.body.accidentDate)).to.deep.equal(update.accidentDate);
+          expect(res.body.caseReserve).to.equal(update.transactions[0].caseReserve);
+          expect(res.body.paidLoss).to.equal(update.transactions[0].lossPayment);
+
+        });
+    });
+
+    it('should return 404 when id is nonexistent', function(){
+      const id = 'DOESNOTEXIST';
+      const update = {
+        transactionDate: new Date(),
+        caseReserve: 3333,
+        paidLoss: 2222
+      };
+
+      return chai.request(app)
+        .put(`/api/claims/${id}`)
+        .send(update)
+        .set('Authorization', `Bearer ${token}`)
+        .then(res => {
+          expect(res).to.have.status(404);
+        });
+    });
   });
 
   describe('DELETE claim', function(){

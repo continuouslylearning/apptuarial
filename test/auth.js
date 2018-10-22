@@ -153,6 +153,20 @@ describe('Auth API', function(){
           expect(res).to.have.status(401);
         }); 
     });
+
+    it('should return 401 when `Bearer` is missing', function(){
+      return Users.findOne({})
+        .then(user => {
+          const token = jwt.sign({ user }, JWT_SECRET, { subject: user.username });
+
+          return chai.request(app)
+            .post('/auth/refresh')
+            .set('Authorization', `${token}`);
+        })
+        .then(res => {
+          expect(res).to.have.status(401);
+        });
+    });
   });
 
 });

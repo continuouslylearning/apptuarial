@@ -307,6 +307,35 @@ describe('Policies API', function(){
     });
   });
 
+  describe('PUT policy', function(){
+
+    it('should update policy in collection', function(){
+      const update = {
+        effectiveDate: new Date(),
+        expiration: new Date(2019, 9, 21),
+        premium: 1234,
+        exposures: 5
+      };
+
+      let id;
+      return Policies.findOne({ userId })
+        .then(policy => {
+          id = policy.id;
+
+          return chai.request(app)
+            .put(`/api/policies/${id}`)
+            .send(update)
+            .set('Authorization', `Bearer ${token}`);
+        })
+        .then(res => {
+          expect(res).to.has.status(201);
+        });
+
+    });
+
+
+  });
+
   describe('DELETE policy', function(){
 
     beforeEach(function(){

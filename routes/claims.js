@@ -48,7 +48,7 @@ router.put('/:id', express.json(), validateId, (req, res, next) => {
   Claims.findOneAndUpdate(
     { _id: claimId, userId}, 
     { $set: update }, 
-    { new: true}
+    { new: true }
   )
     .then(claim => {
       if(!claim) return next();
