@@ -312,7 +312,7 @@ describe('Policies API', function(){
     it('should update policy in collection', function(){
       const update = {
         effectiveDate: new Date(),
-        expiration: new Date(2019, 9, 21),
+        expirationDate: new Date(2019, 9, 21),
         premium: 1234,
         exposures: 5
       };
@@ -329,8 +329,60 @@ describe('Policies API', function(){
         })
         .then(res => {
           expect(res).to.has.status(201);
+          expect(new Date(res.body.effectiveDate)).to.deep.equal(update.effectiveDate);
+          expect(new Date(res.body.expirationDate)).to.deep.equal(update.expirationDate);
+          expect(res.body.premium).to.equal(update.premium);
+          expect(res.body.exposures).to.equal(update.exposures);
+          
+          return Policies.findOne({ _id: id, userId });
+        })
+        .then(policy => {
+          expect(policy.effectiveDate).to.deep.equal(update.effectiveDate);
+          expect(policy.expirationDate).to.deep.equal(update.expirationDate);
+          expect(policy.premium).to.equal(update.premium);
+          expect(policy.exposures).to.equal(update.exposures);
+        });
+    });
+
+    it('should return 401 when JWT is not provided', function(){
+      const update = {
+        effectiveDate: new Date(),
+        expiration: new Date(2019, 9, 21),
+        premium: 1234,
+        exposures: 5
+      };
+
+      let id;
+      return Policies.findOne({ userId })
+        .then(policy => {
+          id = policy.id;
+
+          return chai.request(app)
+            .put(`/api/policies/${id}`)
+            .send(update);
+        })
+        .then(res => {
+          expect(res).to.has.status(401);
         });
 
+    });
+
+    it('should return 404 when id is non-existent', function(){
+      const nonexistentId = 'DOESNOTEXIST';
+      const update = {
+        effectiveDate: new Date(),
+        expiration: new Date(2019, 9, 21),
+        premium: 1234,
+        exposures: 5
+      };
+
+      return chai.request(app)
+        .put(`/api/policies/${nonexistentId}`)
+        .send(update)
+        .set('Authorization', `Bearer ${token}`)
+        .then(res => {
+          expect(res).to.has.status(404);
+        });
     });
 
 
